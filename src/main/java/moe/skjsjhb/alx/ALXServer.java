@@ -19,7 +19,6 @@ public class ALXServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket ws, String s) {
-        System.out.println(s);
         JSONObject msg = new JSONObject(s);
         String eid = msg.getString("eid");
         if (msg.has("nonce") && msg.getString("nonce").equals(nonce)) {
