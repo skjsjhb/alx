@@ -1,6 +1,7 @@
 package moe.skjsjhb.alx;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class AltLauncher {
     public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -12,13 +13,23 @@ public class AltLauncher {
 
         String mainClassName = System.getProperty("alicorn.alx.mainClass");
         Class<?> mainClass = Class.forName(mainClassName);
-        mainClass.getMethod("main", String[].class).invoke(null, (Object) args);
+        Method mainMethod = mainClass.getMethod("main", String[].class);
+
+        try {
+            mainMethod.invoke(null, (Object) args);
+        } catch (Exception e) {
+            try {
+                server.stop();
+            } catch (InterruptedException ignored) {
+            }
+
+            System.exit(1);
+        }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 server.stop();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (InterruptedException ignored) {
             }
         }));
     }
